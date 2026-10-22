@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NUHA-Digital - KUA Geger Madiun</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            dark: '#062d19',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
+        .chat-bubble-user { border-radius: 18px 18px 2px 18px; }
+        .chat-bubble-ai { border-radius: 18px 18px 18px 2px; }
+    </style>
+</head>
+<body id="bodyTag" class="min-h-screen flex justify-center items-center p-0 sm:p-4 bg-slate-950 text-slate-800 dark:text-slate-100 dark:bg-slate-950">
+
+    <!-- App Container Shell -->
+    <div id="appShell" class="w-full max-w-md md:max-w-xl lg:max-w-2xl bg-white dark:bg-slate-900 min-h-screen sm:min-h-[92vh] sm:rounded-3xl shadow-2xl overflow-hidden flex flex-col justify-between border border-slate-200 dark:border-slate-800 relative transition-colors duration-300">
+        
+        <!-- TOP HEADER BAR -->
+        <header id="headerBg" class="bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 text-white p-3 px-4 text-xs flex justify-between items-center border-b border-emerald-800/40">
+            <div class="flex items-center space-x-2 truncate">
+                <span id="headerIcon" class="text-emerald-400 text-sm"><i class="fa-solid fa-kaaba"></i></span>
+                <span id="headerText" class="font-medium text-emerald-100 truncate">Layanan Keagamaan Digital KUA Kecamatan Geger, Kabupaten Madiun</span>
+            </div>
+            <!-- Theme Toggle Button (Moon / Sun) -->
+            <button onclick="toggleTheme()" id="themeToggleBtn" title="Ubah Mode Terang / Gelap" class="p-1.5 rounded-lg bg-emerald-800/60 hover:bg-emerald-700/80 text-emerald-300 hover:text-amber-300 transition flex items-center justify-center">
+                <i id="themeIcon" class="fa-solid fa-moon text-base"></i>
+            </button>
+        </header>
+
+        <!-- BRANDING HERO CARD -->
+        <div class="p-4 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 transition-colors">
+            <div class="flex items-start justify-between">
+                <div class="flex items-center space-x-3">
+                    <div id="appLogoBg" class="w-14 h-14 bg-emerald-700 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg shadow-emerald-700/20 relative">
+                        <i id="appLogoIcon" class="fa-solid fa-mosque"></i>
+                        <span class="absolute -bottom-1 -right-1 w-4 h-4 bg-amber-400 border-2 border-white dark:border-slate-900 rounded-full"></span>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h1 id="appNameText" class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">NUHA-Digital</h1>
+                            <span id="badgeText" class="bg-emerald-100 dark:bg-emerald-950 dark:text-emerald-300 text-emerald-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">KUA GEGER OFFICIAL</span>
+                        </div>
+                        <p id="appSubTitle" class="text-xs font-semibold text-slate-700 dark:text-slate-300 mt-0.5">Navigasi Urusan Harmoni Agama</p>
+                        <p class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mt-0.5">Layanan Konsultasi Keagamaan 24 Jam</p>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400">Disusun oleh: <span class="font-semibold text-slate-700 dark:text-slate-300">Fahad Ulin Nuha, S.Ag.</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NAVIGATION TABS -->
+            <nav class="flex items-center space-x-1 mt-4 overflow-x-auto pb-1 custom-scrollbar text-xs">
+                <button onclick="switchTab('beranda')" id="tab-beranda" class="tab-btn px-3 py-2 rounded-xl font-semibold flex items-center space-x-1.5 whitespace-nowrap bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/80 dark:text-emerald-300 dark:border-emerald-800 shadow-sm">
+                    <i id="icon-beranda" class="fa-solid fa-house"></i> <span id="label-beranda">Beranda</span>
+                </button>
+                <button onclick="switchTab('syariah')" id="tab-syariah" class="tab-btn px-3 py-2 rounded-xl font-medium flex items-center space-x-1.5 whitespace-nowrap text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+                    <i id="icon-syariah" class="fa-solid fa-comments text-emerald-600 dark:text-emerald-400"></i> <span id="label-syariah">Konsultasi Keagamaan</span>
+                </button>
+                <button onclick="switchTab('layanan')" id="tab-layanan" class="tab-btn px-3 py-2 rounded-xl font-medium flex items-center space-x-1.5 whitespace-nowrap text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+                    <i id="icon-layanan" class="fa-solid fa-list-check"></i> <span id="label-layanan">Layanan KUA</span>
+                </button>
+                <button onclick="switchTab('khazanah')" id="tab-khazanah" class="tab-btn px-3 py-2 rounded-xl font-medium flex items-center space-x-1.5 whitespace-nowrap text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+                    <i id="icon-khazanah" class="fa-solid fa-book-quran"></i> <span id="label-khazanah">Khazanah</span>
+                </button>
+                <button onclick="switchTab('tentang')" id="tab-tentang" class="tab-btn px-3 py-2 rounded-xl font-medium flex items-center space-x-1.5 whitespace-nowrap text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800">
+                    <i id="icon-tentang" class="fa-solid fa-circle-info"></i> <span id="label-tentang">Tentang</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 overflow-y-auto bg-slate-50/60 dark:bg-slate-950 p-4 custom-scrollbar relative transition-colors">
+            
+            <!-- TAB 1: BERANDA -->
+            <section id="content-beranda" class="tab-content space-y-4">
+                <!-- HERO CARD -->
+                <div id="heroCardBg" class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 text-white rounded-2xl p-5 shadow-lg relative overflow-hidden">
+                    <div class="absolute -right-6 -bottom-6 opacity-10 text-9xl">
+                        <i class="fa-solid fa-star-and-crescent"></i>
+                    </div>
+                    
+                    <div class="inline-flex items-center space-x-2 bg-emerald-950/60 border border-emerald-500/30 rounded-full px-3 py-1 text-[11px] text-emerald-200 mb-3 backdrop-blur-sm">
+                        <i class="fa-solid fa-shield-halved text-amber-400"></i>
+                        <span id="referenceTagText">Rujukan Kredibel: Kemenag RI, MUI, NU Online & Tarjih Muhammadiyah</span>
+                    </div>
+
+                    <h2 id="heroTitleText" class="text-xl sm:text-2xl font-bold leading-tight mb-2">Penyuluhan Agama Digital & Layanan KUA Geger Terpadu</h2>
+                    <p id="heroDescText" class="text-xs text-emerald-100 leading-relaxed opacity-90 mb-4">
+                        Selamat datang di <strong class="text-white">NUHA-Digital (Navigasi Urusan Harmoni Agama)</strong>, Asisten Digital resmi KUA Kecamatan Geger, Kabupaten Madiun. Kami melayani Layanan Konsultasi Keagamaan 24 Jam dan Informasi Layanan Keagamaan Terpadu.
+                    </p>
+
+                    <div class="flex flex-wrap gap-2 pt-1">
+                        <button onclick="switchTab('syariah')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow transition">
+                            <i class="fa-solid fa-robot"></i> Tanya AI Keagamaan Now
+                        </button>
+                        <a id="waDirectBtn" href="https://wa.me/6285707175833?text=Assalamu%27alaikum%20Petugas%20KUA%20Geger,%20saya%20ingin%20konsultasi" target="_blank" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow transition border border-emerald-400/30">
+                            <i class="fa-brands fa-whatsapp text-sm text-green-300"></i> <span id="waBtnLabel">WA Petugas (+6285707175833)</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- MENU CEPAT CONTAINER -->
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200/80 dark:border-slate-800 shadow-sm transition-colors">
+                    <div id="quickMenuHeader" class="bg-emerald-900 text-white px-3 py-2 rounded-xl flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold tracking-wide flex items-center gap-2">
+                            <i id="quickMenuIcon" class="fa-solid fa-sliders text-amber-400"></i> <span id="quickMenuTitle">MENU CEPAT</span>
+                        </span>
+                    </div>
+
+                    <div class="space-y-2 text-xs">
+                        <button onclick="openQuickInfo('nikah')" class="w-full text-left p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-emerald-200 dark:hover:border-emerald-700 hover:bg-emerald-50/50 dark:hover:bg-slate-800 flex items-center justify-between transition group">
+                            <div class="flex items-center space-x-3">
+                                <span class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-sm"><i class="fa-solid fa-ring"></i></span>
+                                <span class="font-semibold text-slate-700 dark:text-slate-200 group-hover:text-emerald-800 dark:group-hover:text-emerald-400">1. Layanan Pernikahan</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 dark:text-slate-600 group-hover:text-emerald-600 text-xs"></i>
+                        </button>
+
+                        <button onclick="openQuickInfo('konsultasi')" class="w-full text-left p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-emerald-200 dark:hover:border-emerald-700 hover:bg-emerald-50/50 dark:hover:bg-slate-800 flex items-center justify-between transition group">
+                            <div class="flex items-center space-x-3">
+                                <span class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-sm"><i class="fa-solid fa-comments"></i></span>
+                                <span class="font-semibold text-slate-700 dark:text-slate-200 group-hover:text-emerald-800 dark:group-hover:text-emerald-400">2. Layanan Konsultasi Keagamaan</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 dark:text-slate-600 group-hover:text-emerald-600 text-xs"></i>
+                        </button>
+
+                        <button onclick="openQuickInfo('masjid')" class="w-full text-left p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-emerald-200 dark:hover:border-emerald-700 hover:bg-emerald-50/50 dark:hover:bg-slate-800 flex items-center justify-between transition group">
+                            <div class="flex items-center space-x-3">
+                                <span class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-sm"><i class="fa-solid fa-vihara"></i></span>
+                                <span class="font-semibold text-slate-700 dark:text-slate-200 group-hover:text-emerald-800 dark:group-hover:text-emerald-400">9. Layanan Rumah Ibadah</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 dark:text-slate-600 group-hover:text-emerald-600 text-xs"></i>
+                        </button>
+
+                        <button onclick="openQuickInfo('kiblat')" class="w-full text-left p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-emerald-200 dark:hover:border-emerald-700 hover:bg-emerald-50/50 dark:hover:bg-slate-800 flex items-center justify-between transition group">
+                            <div class="flex items-center space-x-3">
+                                <span class="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center text-sm"><i class="fa-solid fa-compass"></i></span>
+                                <span class="font-semibold text-slate-700 dark:text-slate-200 group-hover:text-emerald-800 dark:group-hover:text-emerald-400">10. Layanan Kalibrasi Arah Kiblat</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 dark:text-slate-600 group-hover:text-emerald-600 text-xs"></i>
+                        </button>
+                    </div>
+
+                    <!-- LOKASI & JAM KERJA BOX -->
+                    <div class="mt-4 p-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-xs space-y-1 transition-colors">
+                        <div class="flex items-start space-x-2 text-slate-700 dark:text-slate-200">
+                            <i class="fa-solid fa-location-dot text-emerald-600 dark:text-emerald-400 mt-0.5"></i>
+                            <div>
+                                <span id="kuaNameInfo" class="font-bold text-slate-800 dark:text-white">KUA Kecamatan Geger</span>
+                                <p id="kuaAddressText" class="text-[11px] text-slate-500 dark:text-slate-400">Jl. Raya Ponorogo Km 8 Desa Pagotan Kecamatan Geger Madiun</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2 text-[11px] text-slate-600 dark:text-slate-300 pt-1 border-t border-slate-200/60 dark:border-slate-700 mt-2">
+                            <i class="fa-solid fa-clock text-amber-500"></i>
+                            <span id="kuaHoursText">Sen-Kam: 07:30–16:00 | Jum: 07:30–16:30 WIB</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: KONSULTASI KEAGAMAAN (CHAT AI) -->
+            <section id="content-syariah" class="tab-content hidden flex-col h-[520px] bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-colors">
+                <!-- Chat Header -->
+                <div class="p-3 bg-emerald-900 text-white flex justify-between items-center text-xs">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></div>
+                        <span class="font-bold">Asisten Layanan Konsultasi Keagamaan KUA Geger (24 Jam)</span>
+                    </div>
+                    <span class="text-[10px] bg-emerald-800 px-2 py-0.5 rounded text-emerald-200">Ref: Kemenag, MUI, NU, Muhammadiyah</span>
+                </div>
+
+                <!-- Chat Messages Scroll Container -->
+                <div id="chatContainer" class="flex-1 p-3 overflow-y-auto space-y-3 text-xs custom-scrollbar bg-slate-50/50 dark:bg-slate-950/40">
+                    <!-- Default AI Greeting -->
+                    <div class="flex items-start space-x-2">
+                        <div class="w-7 h-7 bg-emerald-700 text-white rounded-full flex items-center justify-center text-xs flex-shrink-0">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 p-3 chat-bubble-ai shadow-sm max-w-[85%] leading-relaxed">
+                            <p class="font-bold text-emerald-800 dark:text-emerald-400 mb-1">Assalamu'alaikum wr. wb.</p>
+                            Saya Asisten AI **NUHA-Digital** KUA Geger Madiun. Silakan tanyakan masalah syariat Islam, fiqih ibadah/muamalah, pernikahan, sertifikasi halal, tilawatil Qur'an, kalibrasi kiblat, ID masjid/musholla, wakaf, atau layanan KUA.
+                            <div class="mt-2 text-[10px] text-slate-400 dark:text-slate-400 italic border-t border-slate-100 dark:border-slate-700 pt-1">
+                                Rujukan resmi: Al-Qur'an, Hadits, Kemenag RI, Fatwa MUI, NU Online, & Tarjih Muhammadiyah.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Prompt Buttons -->
+                <div class="p-2 bg-slate-100 dark:bg-slate-800/80 border-t border-slate-200 dark:border-slate-700 flex gap-1.5 overflow-x-auto text-[11px] custom-scrollbar">
+                    <button onclick="sendQuickPrompt('Apa syarat lengkap pendaftaran nikah PMA No. 20/2019?')" class="bg-white dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 hover:text-emerald-700 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-600 whitespace-nowrap">
+                        💍 Syarat Nikah PMA
+                    </button>
+                    <button onclick="sendQuickPrompt('Bagaimana prosedur mengajukan kalibrasi pengungsuran arah kiblat tempat ibadah?')" class="bg-white dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 hover:text-emerald-700 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-600 whitespace-nowrap">
+                        🧭 Kalibrasi Arah Kiblat
+                    </button>
+                    <button onclick="sendQuickPrompt('Bagaimana tata cara pendaftaran ID Masjid/Musholla di SIMAS Kemenag?')" class="bg-white dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 hover:text-emerald-700 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-600 whitespace-nowrap">
+                        🕌 ID Masjid & Musholla
+                    </button>
+                    <button onclick="sendQuickPrompt('Bagaimana cara mengajukan Sertifikasi Halal Gratis (Self Declare)?')" class="bg-white dark:bg-slate-700 hover:bg-emerald-50 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 hover:text-emerald-700 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-600 whitespace-nowrap">
+                        🏷️ Sertifikasi Halal UMK
+                    </button>
+                </div>
+
+                <!-- Input Chat Box -->
+                <div class="p-2.5 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex items-center gap-2">
+                    <input id="chatInput" type="text" placeholder="Ketik pertanyaan konsultasi keagamaan / layanan KUA..." class="flex-1 bg-slate-100 dark:bg-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600" onkeydown="if(event.key==='Enter') sendMessage()">
+                    <button onclick="sendMessage()" class="bg-emerald-700 hover:bg-emerald-800 text-white p-2 px-3 rounded-xl text-xs font-semibold transition">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- TAB 3: LAYANAN KUA -->
+            <section id="content-layanan" class="tab-content hidden space-y-3">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3 text-xs transition-colors">
+                    <h3 id="layananSectionTitle" class="font-bold text-sm text-emerald-900 dark:text-emerald-400 flex items-center gap-2">
+                        <i class="fa-solid fa-scroll text-amber-500"></i> Daftar 10 Layanan Resmi KUA Kecamatan Geger
+                    </h3>
+
+                    <!-- 1. Layanan Pernikahan -->
+                    <div class="p-3 bg-emerald-50/60 dark:bg-emerald-950/40 rounded-xl border border-emerald-200/80 dark:border-emerald-800/60">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-ring text-emerald-700 dark:text-emerald-400"></i>
+                            <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs">1. Layanan Pernikahan (PMA No. 30/2024)</h4>
+                        </div>
+                        <p class="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                            Pendaftaran pencatatan nikah, bimbingan perkawinan (Bimwin), verifikasi dokumen (N1-N4), pemeriksaan calon pengantin, serta penerbitan Buku Nikah resmi.
+                        </p>
+                    </div>
+
+                    <!-- 2. Layanan Konsultasi Keagamaan -->
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200/80 dark:border-slate-700">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-comments text-emerald-700 dark:text-emerald-400"></i>
+                            <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs">2. Layanan Konsultasi Keagamaan</h4>
+                        </div>
+                        <p class="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                            Konseling keluarga sakinah, konsultasi hukum fikih, penanganan konflik rumah tangga, kepenyuluhan agama Islam, dan bimbingan mualaf.
+                        </p>
+                    </div>
+
+                    <!-- 3. Sertifikasi Produk Halal -->
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200/80 dark:border-slate-700">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-certificate text-emerald-700 dark:text-emerald-400"></i>
+                            <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs">3. Sertifikasi Produk Halal</h4>
+                        </div>
+                        <p class="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                            Pendampingan Proses Produk Halal (PPH) bagi Usaha Mikro & Kecil (UMK) melalui program Sertifikasi Halal Gratis (Self Declare) BPJPH Kemenag.
+                        </p>
+                    </div>
+
+                    <!-- 4. Pembinaan Tilawatil Quran -->
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200/80 dark:border-slate-700">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-book-open-reader text-emerald-700 dark:text-emerald-400"></i>
+                            <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs">4. Pembinaan Tilawatil Qur'an</h4>
+                        </div>
+                        <p class="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                            Bimbingan tajwid, fashohah, pengembangan seni Al-Qur'an (Naghom) untuk qari/qariah, madrasah, remaja, serta majelis taklim di Kecamatan Geger.
+                        </p>
+                    </div>
+
+                    <!-- 5. Pendampingan Kelompok Rentan -->
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200/80 dark:border-slate-700">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-hands-holding-child text-emerald-700 dark:text-emerald-400"></i>
+                            <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs">5. Pendampingan Kelompok Rentan</h4>
+                        </div>
+                        <p class="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                            Layanan inklusif dan pembinaan keagamaan khusus penyandang disabilitas, lansia, kelompok perempuan rentan, serta masyarakat kurang mampu.
+                        </p>
+                    </div>
+
+                    <!-- 6. SALAM KUA -->
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200/80 dark:border-slate-700">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-brands fa-tiktok text-emerald-700 dark:text-emerald-400"></i>
+                            <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs">6. SALAM KUA (Live TikTok Sapa Layanan Masyarakat)</h4>
+                        </div>
+                        <p class="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                            Program inovasi siaran langsung (Live TikTok) interaktif KUA Geger untuk menyapa masyarakat, edukasi layanan KUA, serta tanya jawab langsung secara digital.
+                        </p>
+                    </div>
+
+                    <!-- 7. Layanan Wakaf & Zakat -->
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200/80 dark:border-slate-700">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-hand-holding-heart text-emerald-700 dark:text-emerald-400"></i>
+                            <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs">7. Layanan Wakaf & Zakat</h4>
+                        </div>
+                        <p class="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                            Penerbitan Akta Ikrar Wakaf (AIW), legalitas sertifikasi tanah wakaf/tempat ibadah, sertifikasi nazhir, serta edukasi tata kelola zakat produktif.
+                        </p>
+                    </div>
+
+                    <!-- 8. Pemberdayaan Ekonomi Umat -->
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200/80 dark:border-slate-700">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-coins text-emerald-700 dark:text-emerald-400"></i>
+                            <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs">8. Pemberdayaan Ekonomi Umat</h4>
+                        </div>
+                        <p class="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                            Program pendampingan kewirausahaan berbasis rumah ibadah, literasi keuangan syariah, kemitraan ekonomi UMK, dan optimalisasi zakat/wakaf produktif.
+                        </p>
+                    </div>
+
+                    <!-- 9. Layanan Rumah Ibadah (Kemasjidan & Musholla) -->
+                    <div class="p-3 bg-emerald-50/60 dark:bg-emerald-950/40 rounded-xl border border-emerald-200/80 dark:border-emerald-800/60">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-vihara text-emerald-700 dark:text-emerald-400"></i>
+                            <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs">9. Layanan Rumah Ibadah (Kemasjidan & Musholla)</h4>
+                        </div>
+                        <p class="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                            Pengurusan dan penerbitan ID Masjid/Musholla resmi Sistem Informasi Masjid (SIMAS) Kemenag RI, penerbitan surat rekomendasi bantuan, serta penguatan manajemen kemasjidan di Kecamatan Geger.
+                        </p>
+                    </div>
+
+                    <!-- 10. Layanan Kalibrasi Arah Kiblat -->
+                    <div class="p-3 bg-emerald-50/60 dark:bg-emerald-950/40 rounded-xl border border-emerald-200/80 dark:border-emerald-800/60">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i class="fa-solid fa-compass text-emerald-700 dark:text-emerald-400"></i>
+                            <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs">10. Layanan Kalibrasi Arah Kiblat</h4>
+                        </div>
+                        <p class="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                            Permohonan verifikasi dan pengukuran ulang arah kiblat tempat ibadah (Masjid/Musholla), musholla perkantoran/sekolah, rumah tinggal, serta lahan pemakaman secara presisi menggunakan azimuth bayang-bayang matahari dan kompas khusus.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: KHAZANAH ISLAMI -->
+            <section id="content-khazanah" class="tab-content hidden space-y-3">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3 transition-colors">
+                    <h3 id="khazanahSectionTitle" class="font-bold text-sm text-emerald-900 dark:text-emerald-400 flex items-center gap-2">
+                        <i class="fa-solid fa-book-quran text-amber-500"></i> Khazanah Keilmuan Islami
+                    </h3>
+
+                    <!-- 1. Al-Qur'an dan Hadits -->
+                    <div class="p-3.5 bg-emerald-50/60 dark:bg-emerald-950/40 rounded-xl border border-emerald-100 dark:border-emerald-800/60">
+                        <span class="bg-emerald-200 dark:bg-emerald-900 dark:text-emerald-200 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">Khazanah 1</span>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs mt-1.5">Al-Qur'an dan Hadits</h4>
+                        <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                            Studi tafsir tematik, pemahaman ulumul Qur'an, syarah hadits shahih, serta keutamaan membaca dan mengamalkan Al-Qur'an dalam kehidupan sehari-hari.
+                        </p>
+                    </div>
+
+                    <!-- 2. Akidah dan Keimanan -->
+                    <div class="p-3.5 bg-blue-50/60 dark:bg-blue-950/40 rounded-xl border border-blue-100 dark:border-blue-900/60">
+                        <span class="bg-blue-200 dark:bg-blue-900 dark:text-blue-200 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded">Khazanah 2</span>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs mt-1.5">Akidah dan Keimanan</h4>
+                        <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                            Penguatan fondasi tauhid, keimanan Rukun Iman, penanaman prinsip Ahlussunnah wal Jama'ah, serta penjagaan akidah dari pemikiran menyimpang.
+                        </p>
+                    </div>
+
+                    <!-- 3. Fikih Ibadah dan Muamalah -->
+                    <div class="p-3.5 bg-purple-50/60 dark:bg-purple-950/40 rounded-xl border border-purple-100 dark:border-purple-900/60">
+                        <span class="bg-purple-200 dark:bg-purple-900 dark:text-purple-200 text-purple-800 text-[10px] font-bold px-2 py-0.5 rounded">Khazanah 3</span>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs mt-1.5">Fikih Ibadah dan Muamalah</h4>
+                        <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                            Panduan tata cara bersuci (thaharah), shalat, puasa, zakat, haji, serta prinsip transaksi ekonomi syariah (muamalah maaliyah) yang halal.
+                        </p>
+                    </div>
+
+                    <!-- 4. Akhlak dan Tasawuf -->
+                    <div class="p-3.5 bg-amber-50/60 dark:bg-amber-950/40 rounded-xl border border-amber-100 dark:border-amber-900/60">
+                        <span class="bg-amber-200 dark:bg-amber-900 dark:text-amber-200 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">Khazanah 4</span>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs mt-1.5">Akhlak dan Tasawuf</h4>
+                        <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                            Pembersihan jiwa (tazkiyatun nufs), penyempurnaan akhlakul karimah kepada Allah SWT, sesama manusia, serta perwujudan sifat ihsan.
+                        </p>
+                    </div>
+
+                    <!-- 5. Pernikahan dan Keluarga Sakinah -->
+                    <div class="p-3.5 bg-rose-50/60 dark:bg-rose-950/40 rounded-xl border border-rose-100 dark:border-rose-900/60">
+                        <span class="bg-rose-200 dark:bg-rose-900 dark:text-rose-200 text-rose-800 text-[10px] font-bold px-2 py-0.5 rounded">Khazanah 5</span>
+                        <h4 class="font-bold text-slate-800 dark:text-slate-100 text-xs mt-1.5">Pernikahan dan Keluarga Sakinah</h4>
+                        <p class="text-[11px] text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                            Kunci membangun keluarga sakinah mawaddah warahmah, hak dan kewajiban suami istri, parenting islami, serta resolusi konflik rumah tangga secara syar'i.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: TENTANG & IDENTITAS -->
+            <section id="content-tentang" class="tab-content hidden space-y-3">
+                <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3 text-xs transition-colors">
+                    <div class="p-3.5 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200/80 dark:border-emerald-800/60">
+                        <h3 class="font-bold text-slate-900 dark:text-slate-100 text-sm mb-2">Identitas Layanan & Instansi</h3>
+                        <div class="space-y-1.5 text-slate-700 dark:text-slate-300 text-[11px]">
+                            <p><strong>Aplikasi:</strong> NUHA-Digital (Navigasi Urusan Harmoni Agama)</p>
+                            <p><strong>Pembuat / Penyusun:</strong> <span class="font-semibold text-emerald-800 dark:text-emerald-300">Fahad Ulin Nuha, S.Ag.</span></p>
+                            <p><strong>Unit Kerja:</strong> <span id="aboutKua">KUA Kecamatan Geger, Kabupaten Madiun</span></p>
+                            <p><strong>Alamat KUA:</strong> <span id="aboutAddress">Jl. Raya Ponorogo Km 8 Desa Pagotan Kecamatan Geger Madiun</span></p>
+                        </div>
+                        <div class="mt-3 pt-2 border-t border-emerald-200 dark:border-emerald-800 text-[11px]">
+                            <strong>Jam Pelayanan Resmi KUA Geger:</strong>
+                            <p id="aboutHours">• Senin – Kamis: 07:30 – 16:00 WIB<br>• Jumat: 07:30 – 16:30 WIB</p>
+                            <p class="mt-1 text-emerald-800 dark:text-emerald-400 font-bold">• Layanan Konsultasi Keagamaan Digital AI: 24 Jam</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 space-y-1 text-[11px] text-slate-600 dark:text-slate-300">
+                        <h4 class="font-bold text-slate-800 dark:text-slate-200">Asas & Kebijakan Rujukan Jawaban AI</h4>
+                        <p>Mengutamakan rujukan resmi dari **Kemenag RI**, situs **MUI**, **NU Online**, dan **Tarjih Muhammadiyah**.</p>
+                        <p>Mengacu pada **PMA No. 30 Tahun 2024** untuk pencatatan perkawinan & **UU No. 41/2004** untuk Wakaf.</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer id="footerBg" class="bg-[#070d18] text-center p-5 text-xs text-slate-300 border-t border-slate-800/80 space-y-2">
+            <div>
+                <p id="footerAppTitle" class="font-bold text-sm text-white tracking-wide">NUHA-Digital – Navigasi Urusan Harmoni Agama</p>
+                <p id="footerKuaText" class="text-emerald-400 font-medium text-xs mt-0.5">KUA Kecamatan Geger, Kabupaten Madiun</p>
+            </div>
+            
+            <p id="footerHoursText" class="text-[11px] text-slate-400">
+                Jam Kerja: Sen-Kam (07:30–16:00 WIB) | Jum (07:30–16:30 WIB)
+            </p>
+
+            <div class="pt-2 border-t border-slate-800/60 text-[11px] text-slate-400 space-y-1">
+                <p class="text-emerald-300/90 font-medium">Disusun oleh: <span class="font-bold text-white">Fahad Ulin Nuha, S.Ag.</span></p>
+                <p id="footerCopyright" class="text-[10px] text-slate-500">© 2026 NUHA-Digital KUA Geger Madiun. Hak Cipta Dilindungi.</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC & AI INTEGRATION -->
+    <script>
+        // DARK / LIGHT THEME TOGGLE
+        function toggleTheme() {
+            const body = document.getElementById('bodyTag');
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                themeIcon.className = 'fa-solid fa-moon text-base';
+            } else {
+                body.classList.add('dark');
+                themeIcon.className = 'fa-solid fa-sun text-base text-amber-400';
+            }
+        }
+
+        // TAB SWITCHING SYSTEM
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            });
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-50', 'text-emerald-700', 'border', 'border-emerald-200', 'shadow-sm', 'font-semibold', 'dark:bg-emerald-950/80', 'dark:text-emerald-300', 'dark:border-emerald-800');
+                btn.classList.add('text-slate-600', 'dark:text-slate-300', 'font-medium');
+            });
+
+            const activeContent = document.getElementById('content-' + tabName);
+            if (tabName === 'syariah') {
+                activeContent.classList.remove('hidden');
+                activeContent.classList.add('flex');
+            } else {
+                activeContent.classList.remove('hidden');
+            }
+
+            const activeTabBtn = document.getElementById('tab-' + tabName);
+            activeTabBtn.classList.add('bg-emerald-50', 'text-emerald-700', 'border', 'border-emerald-200', 'shadow-sm', 'font-semibold', 'dark:bg-emerald-950/80', 'dark:text-emerald-300', 'dark:border-emerald-800');
+            activeTabBtn.classList.remove('text-slate-600', 'dark:text-slate-300', 'font-medium');
+        }
+
+        // QUICK MENU INFO ACTION
+        function openQuickInfo(type) {
+            switchTab('syariah');
+            if(type === 'nikah') {
+                sendQuickPrompt('Apa syarat lengkap pendaftaran nikah berdasarkan PMA No. 30/2024 di KUA Geger?');
+            } else if(type === 'konsultasi') {
+                sendQuickPrompt('Saya ingin berkonsultasi mengenai bimbingan keluarga sakinah dan layanan konsultasi keagamaan.');
+            } else if(type === 'masjid') {
+                sendQuickPrompt('Bagaimana prosedur pendaftaran ID Masjid atau Musholla di SIMAS Kemenag via KUA Geger?');
+            } else if(type === 'kiblat') {
+                sendQuickPrompt('Bagaimana cara mengajukan pengukuran dan kalibrasi arah kiblat untuk masjid/musholla di KUA Geger?');
+            }
+        }
+
+        // CHATBOT INTERACTION LOGIC
+        async function sendMessage() {
+            const inputEl = document.getElementById('chatInput');
+            const userMsg = inputEl.value.trim();
+            if (!userMsg) return;
+
+            renderUserMessage(userMsg);
+            inputEl.value = '';
+
+            const loadingId = renderLoadingIndicator();
+
+            try {
+                const responseText = await fetchGeminiSyariahAI(userMsg);
+                removeLoadingIndicator(loadingId);
+                renderAIMessage(responseText);
+            } catch (error) {
+                removeLoadingIndicator(loadingId);
+                renderAIMessage("Mohon maaf, terjadi kendala saat terhubung ke sistem AI. Anda dapat berkonsultasi langsung via WhatsApp ke petugas KUA (+6285707175833).");
+            }
+        }
+
+        function sendQuickPrompt(promptText) {
+            document.getElementById('chatInput').value = promptText;
+            sendMessage();
+        }
+
+        function renderUserMessage(msg) {
+            const container = document.getElementById('chatContainer');
+            const div = document.createElement('div');
+            div.className = "flex items-start justify-end space-x-2";
+            div.innerHTML = `
+                <div class="bg-emerald-700 text-white p-3 chat-bubble-user shadow-sm max-w-[85%] leading-relaxed">
+                    ${escapeHtml(msg)}
+                </div>
+                <div class="w-7 h-7 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-full flex items-center justify-center text-xs flex-shrink-0">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function renderAIMessage(msg) {
+            const container = document.getElementById('chatContainer');
+            const div = document.createElement('div');
+            div.className = "flex items-start space-x-2";
+            div.innerHTML = `
+                <div class="w-7 h-7 bg-emerald-700 text-white rounded-full flex items-center justify-center text-xs flex-shrink-0">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 p-3 chat-bubble-ai shadow-sm max-w-[85%] leading-relaxed">
+                    ${formatMarkdown(msg)}
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function renderLoadingIndicator() {
+            const container = document.getElementById('chatContainer');
+            const id = 'loading-' + Date.now();
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = "flex items-start space-x-2";
+            div.innerHTML = `
+                <div class="w-7 h-7 bg-emerald-700 text-white rounded-full flex items-center justify-center text-xs flex-shrink-0">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 chat-bubble-ai shadow-sm flex items-center space-x-2 text-slate-400 dark:text-slate-300">
+                    <i class="fa-solid fa-circle-notch fa-spin text-emerald-600 dark:text-emerald-400"></i>
+                    <span>Mencari rujukan Kemenag, MUI, NU & Muhammadiyah...</span>
+                </div>
+            `;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            return id;
+        }
+
+        function removeLoadingIndicator(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        // GEMINI API CALL WITH RETRY & EXPONENTIAL BACKOFF
+        async function fetchGeminiSyariahAI(userQuery) {
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            const systemPrompt = `
+                Anda adalah AI Layanan Konsultasi Keagamaan & Layanan KUA Digital bernama NUHA-Digital (Navigasi Urusan Harmoni Agama) untuk KUA Kecamatan Geger, Kabupaten Madiun.
+                Aplikasi ini disusun oleh Fahad Ulin Nuha, S.Ag.
+                
+                Daftar Lengkap 10 Layanan Resmi KUA Geger:
+                1. Layanan Pernikahan (PMA No. 30/2024)
+                2. Layanan Konsultasi Keagamaan
+                3. Sertifikasi Produk Halal
+                4. Pembinaan Tilawatil Qur'an
+                5. Pendampingan Kelompok Rentan
+                6. SALAM KUA (Live TikTok Sapa Layanan Masyarakat)
+                7. Layanan Wakaf & Zakat
+                8. Pemberdayaan Ekonomi Umat
+                9. Layanan Rumah Ibadah (Kemasjidan & Musholla)
+                10. Layanan Kalibrasi Arah Kiblat
+
+                Kategori Khazanah Islami:
+                - Al-Qur'an dan Hadits
+                - Akidah dan Keimanan
+                - Fikih Ibadah dan Muamalah
+                - Akhlak dan Tasawuf
+                - Pernikahan dan Keluarga Sakinah
+
+                Pedoman Jawaban:
+                1. Jika ditanya tentang hukum Fiqih/Syariat Islam dan konsultasi keagamaan, berikan jawaban yang santun, moderat, dan rujuk secara jelas pandangan dari Kementerian Agama RI (Kemenag), Fatwa MUI, NU Online, atau Tarjih Muhammadiyah.
+                2. Jika ada perbedaan pendapat (ikhtilaf) antar madzhab atau ormas Islam, sampaikan secara tawasuth (moderat), toleran, dan bijaksana.
+                3. Jam Pelayanan KUA Geger: Sen-Kam (07:30-16:00 WIB), Jum (07:30-16:30 WIB). Layanan Konsultasi Keagamaan AI melayani 24 jam.
+                4. Sertakan arahan kontak WhatsApp Petugas (+6285707175833) jika memerlukan pelayanan tatap muka/berkas resmi.
+            `;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            let delays = [1000, 2000, 4000];
+            for (let i = 0; i <= delays.length; i++) {
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        const candidate = data.candidates?.[0];
+                        if (candidate && candidate.content?.parts?.[0]?.text) {
+                            return candidate.content.parts[0].text;
+                        }
+                    }
+                } catch (e) {
+                    // Retry silently
+                }
+
+                if (i < delays.length) {
+                    await new Promise(res => setTimeout(res, delays[i]));
+                }
+            }
+
+            return "Terima kasih telah berkonsultasi. Untuk pertanyaan spesifik ini, Anda dapat menghubungi Petugas KUA Geger via WhatsApp di +6285707175833.";
+        }
+
+        // HELPER UTILS
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function formatMarkdown(text) {
+            let formatted = escapeHtml(text);
+            formatted = formatted.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            formatted = formatted.replace(/\n/g, '<br>');
+            return formatted;
+        }
+    </script>
+</body>
+</html>
